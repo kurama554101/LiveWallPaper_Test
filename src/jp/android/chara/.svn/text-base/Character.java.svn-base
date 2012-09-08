@@ -1,0 +1,104 @@
+package jp.android.chara;
+
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
+
+public class Character extends RectF {
+	
+	/*
+	 * Character Define Value
+	 */
+	public static int DIRECTION_LEFT = 0;
+	public static int DIRECTION_RIGHT = 1;
+	public static int DIRECTION_UP = 2;
+	public static int DIRECTION_DOWN = 3;
+	public static int ACTION_WALK = 10;
+	public static int ACTION_TALK = 11;
+	public static int ACTION_NONE = 12;
+	public static int ACTION_DIRECTION_CHANGE = 13;
+	
+	/*
+	 * Character Private Define Value
+	 */
+	
+	
+	/*
+	 * Character Value
+	 */
+	private Bitmap image;
+	/*private int Direction;
+	private int imageID;
+	private int[] imageID_UP;
+	private int[] imageID_DOWN;
+	private int[] imageID_LEFT;
+	private int[] imageID_RIGHT;*/
+	
+	/* 
+	 * Character Method
+	 */
+	public Character(Resources res, int chara_id) {
+		image = BitmapFactory.decodeResource(res, chara_id);
+		this.left = 0;
+		this.top = 0;
+		this.right = left + image.getWidth();;
+		this.bottom = top + image.getHeight();;
+	}
+	
+	public void SetX(float center_x) {
+		float width = this.width();
+		this.left = center_x - width/2;
+		this.right = center_x + width/2;
+	}
+	
+	public void SetY(float center_y) {
+		float height = this.height();
+		this.top = center_y - height/2;
+		this.bottom = center_y + height/2;
+	}
+	
+	/* X,Yはキャラクターの中心座標 */
+	public void SetXY(float center_x, float center_y) {
+		SetX(center_x);
+		SetY(center_y);
+	}
+	
+	public void SetDirection(int direct) {
+		//TBD
+	}
+	
+	/* If Display Size Change, this method is called */
+	public void SizeChanged(int width, int height) {
+		
+	}
+	
+	public void Walk(int direct, int speed) {
+		//TBD
+	}
+	
+	public void Talk(String message) {
+		//TBD
+	}
+	
+	public void Action() {
+		//TBD
+	}
+	
+	/* touch eventがあったときに判定する関数 */
+	public Boolean TouchCheck(float x, float y) {
+		return this.contains(x, y);
+	}
+	
+	/* キャラクターが他の物体とのあたり判定を行う際に使う関数 */
+	public Boolean HitCheck() {
+		//TBD
+		return true;
+	}
+	
+	public void Draw(Canvas c, Paint p) {
+		c.drawBitmap(image, this.left, this.top, p);
+	}
+}

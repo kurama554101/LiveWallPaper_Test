@@ -1,0 +1,150 @@
+package jp.android.main;
+
+import jp.android.chara.Character;
+import jp.android.sound.WavePlayer;
+import jp.android.status.DispStatus;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.os.Handler;
+import android.service.wallpaper.WallpaperService;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+
+public class LiveWallPaperServiceTest extends WallpaperService {
+	
+	private final Handler mHandler = new Handler();
+	public DispStatus mDispStatus = new DispStatus();
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		//android.os.Debug.waitForDebugger(); //serviceをデバッグするためのおまじない
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	}
+	
+	@Override
+	public Engine onCreateEngine() {
+		return new LiveWallPaperEngine();
+	}
+	
+	class LiveWallPaperEngine extends Engine {
+		/* Local Variable */
+		boolean mVisible = false;
+		Character chara1 = null;
+		WavePlayer wplayer = null;
+		
+		/* Resource File */
+		Context context = getApplicationContext();
+		Resources res = getResources();
+		int chara1_id = R.drawable.minami160;
+		int wav_id[] = {R.raw.minami_syoukan_koe1};
+		
+		/* Draw Thread */
+		private final Runnable mDrawFrame = new Runnable() {
+			public void run() {
+				drawFrame();
+				mHandler.post(mDrawFrame);
+			}
+		};
+		
+		/* Constructer */
+		LiveWallPaperEngine() {
+			chara1 = new jp.android.chara.Character(res, chara1_id);
+			wplayer = new WavePlayer(context, wav_id);
+		}
+		
+		@Override
+		public void onCreate(SurfaceHolder surfaceHolder) {
+			super.onCreate(surfaceHolder);
+			setTouchEventsEnabled(true);
+            
+			/* draw thread start */
+			mHandler.post(mDrawFrame);
+		}
+		
+		@Override
+        public void onDestroy() {
+            super.onDestroy();
+            mHandler.removeCallbacks(mDrawFrame);
+        }
+
+		@Override
+        public void onVisibilityChanged(boolean visible) {
+            mVisible = visible;
+            if (visible) {
+                drawFrame();
+            } else {
+                /* TBD */
+            }
+        }
+		
+		@Override
+	    public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+	        super.onSurfaceChanged(holder, format, width, height);
+	        mDispStatus.SetDispHeight(height);
+	        mDispStatus.SetDispWidth(width);
+	        /* TBD */
+	    }
+		
+		@Override
+        public void onSurfaceCreated(SurfaceHolder holder) {
+            super.onSurfaceCreated(holder);
+        }
+		
+		@Override
+        public void onSurfaceDestroyed(SurfaceHolder holder) {
+            super.onSurfaceDestroyed(holder);
+            mVisible = false;
+        }
+		
+		@Override
+        public void onOffsetsChanged(float xOffset, float yOffset,
+                float xStep, float yStep, int xPixels, int yPixels) {
+            //mOffset = xOffset;
+            drawFrame();
+        }
+		
+		@Override
+		public void onTouchEvent(MotionEvent event) {
+			switch(event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				if(chara1.TouchCheck(event.getX(), event.getY())) {
+					wplayer.PlayRes(R.raw.minami_syoukan_koe1);
+				}
+				chara1.SetXY(event.getX(), event.getY());
+				
+			case MotionEvent.ACTION_MOVE:
+				;
+			case MotionEvent.ACTION_UP:
+				;
+			}
+		}
+		
+		public void drawFrame() {
+			final SurfaceHolder holder = getSurfaceHolder();
+			Canvas c = null;
+			
+			try {
+				c = holder.lockCanvas();
+				drawClean(c);
+				chara1.Draw(c, null);
+				
+			} finally {
+				if(c!=null) {
+					holder.unlockCanvasAndPost(c);
+				}
+			}
+		}
+		
+		public void drawClean(Canvas c) {
+			c.drawColor(Color.BLACK);
+		}
+	}
+
+}

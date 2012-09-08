@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, MainActivity!</string>
+    <string name="app_name">LiveWallPaper_Test</string>
+<string name="wallpaper_description">test</string>
+<string name="LiveWallPaper">LiveWallPaper</string>
+</resources>

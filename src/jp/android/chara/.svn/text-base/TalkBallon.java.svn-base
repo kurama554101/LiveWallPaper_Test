@@ -1,0 +1,135 @@
+package jp.android.chara;
+
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.RectF;
+import android.graphics.Rect;
+import android.graphics.drawable.NinePatchDrawable;
+
+/*public class TalkBallon extends RectF*/
+public class TalkBallon {
+	/*
+	 * Define Value
+	 */
+	public final static int COMMENT_LEFT_DIRECTION = 0;
+	public final static int COMMENT_RIGHT_DIRECTION = 1;
+	public final static int COMMENT_LEFT_BOTTOM_DIRECTION = 2;
+	public final static int COMMENT_RIGHT_BOTTOM_DIRECTION = 3;
+	
+	/*
+	 * Private Define Value
+	 */
+	
+	/*
+	 * Local Value
+	 */
+	private Bitmap[] image = null;
+	String[] messageDB = null;
+	NinePatchDrawable nDrawble = null;
+	Rect ballonRect = null;
+	int commentDirection;
+	float image_width;
+	float image_height;
+	
+	/*
+	 * Constructor
+	 */
+	public TalkBallon(Resources res, int[] image_id) {
+		init(res, image_id);
+	}
+	
+	public TalkBallon(Resources res, int[] image_id, float center_x, float center_y) {
+		init(res, image_id);
+		SetBallonPos(center_x, center_y);
+	}
+	
+	public TalkBallon(Resources res, int[] image_id, RectF r) {
+		init(res, image_id);
+		SetBallonPos(r);
+	}
+	
+	/*
+	 * Method
+	 */
+	private void init(Resources res, int[] image_id) {
+		image = new Bitmap[4]; // commentは左右上下で同じ大きさのイメージを持つため。
+		SetCommentImage(res, image_id);
+		commentDirection = COMMENT_LEFT_DIRECTION;
+	}
+	
+	private boolean SetCommentImage(Resources res, int[] image_id) {
+		if(res==null) return false;
+		image[COMMENT_LEFT_DIRECTION] = BitmapFactory.decodeResource(res, image_id[COMMENT_LEFT_DIRECTION]);
+		image[COMMENT_RIGHT_DIRECTION] = BitmapFactory.decodeResource(res, image_id[COMMENT_RIGHT_DIRECTION]);
+		image[COMMENT_LEFT_BOTTOM_DIRECTION] = BitmapFactory.decodeResource(res, image_id[COMMENT_LEFT_BOTTOM_DIRECTION]);
+		image[COMMENT_RIGHT_BOTTOM_DIRECTION] = BitmapFactory.decodeResource(res, image_id[COMMENT_RIGHT_BOTTOM_DIRECTION]);
+		
+		/* Commentの矩形内容の初期化 */
+		image_width = image[COMMENT_LEFT_DIRECTION].getWidth();
+		image_height = image[COMMENT_LEFT_DIRECTION].getHeight();
+		/*this.top = 0;
+		this.left = 0;
+		this.bottom = image_height;
+		this.right = image_width;*/
+		ballonRect.top = 0;
+		ballonRect.left = 0;
+		ballonRect.bottom = (int)image_height;
+		ballonRect.right = (int)image_width;
+		
+		return true;
+	}
+	
+	public void SetMessageDB(String[] message) {
+		
+	}
+	
+	/*public RectF GetBallonSize() {
+		return this;
+	}*/
+	public Rect GetBallonSize() {
+		return ballonRect;
+	}
+	
+	/* 矩形型を代入する場合は事前に矩形の大きさが同一かを判定する */
+	public Boolean SetBallonPos(RectF r) {
+		if(r==null) return false;
+		
+		return true;
+	}
+	
+	/*public void SetBallonPos(float center_x, float center_y) {
+		float height = this.height();
+		float width = this.width();
+		
+		this.top = center_y - height/2;
+		this.bottom = center_y + height/2;
+		this.left = center_x - width/2;
+		this.right = center_x + width/2;
+	}*/
+	public void SetBallonPos(float center_x, float center_y) {
+		int height = ballonRect.height();
+		int width = ballonRect.width();
+		
+		ballonRect.top = (int)(center_y - height/2);
+		ballonRect.bottom = (int)(center_y + height/2);
+		ballonRect.left = (int)(center_x - width/2);
+		ballonRect.right = (int)(center_x + width/2);
+	}
+	
+	public void SetCommentDirection(int direction_id) {
+		commentDirection = direction_id;
+	}
+	
+	public void Draw(Canvas c, String text) {
+		/* ninePatchDrawbleはfloatだと使えない。違う方法を検討する必要あり */
+		/* 現状は無理やりRect型を使って、実装している */
+		nDrawble = new NinePatchDrawable(image[commentDirection], image[commentDirection].getNinePatchChunk(), null, null);
+		nDrawble.setBounds(ballonRect);
+	}
+	
+	public void Draw(Canvas c, int db_id) {
+		
+	}
+}
