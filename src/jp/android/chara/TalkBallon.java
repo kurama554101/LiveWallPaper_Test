@@ -19,6 +19,7 @@ public class TalkBallon {
 	public final static int COMMENT_RIGHT_TOP_DIRECTION = 1;
 	public final static int COMMENT_LEFT_BOTTOM_DIRECTION = 2;
 	public final static int COMMENT_RIGHT_BOTTOM_DIRECTION = 3;
+	public final static int COMMENT_DEFAULT_SHOWING_TIME = 300;
 	
 	/*
 	 * Private Define Value
@@ -34,6 +35,9 @@ public class TalkBallon {
 	private int commentDirection;
 	private float image_width;
 	private float image_height;
+	private int showingTime;//commentの表示時間
+	private int showingCount;
+	private boolean doTalk;
 	
 	/**
 	 * Constructor
@@ -63,6 +67,9 @@ public class TalkBallon {
 		
 		SetCommentImage(res, image_id);
 		commentDirection = COMMENT_LEFT_TOP_DIRECTION;
+		showingTime = COMMENT_DEFAULT_SHOWING_TIME;
+		showingCount = 0;
+		doTalk = false;
 	}
 	
 	/**
@@ -226,6 +233,42 @@ public class TalkBallon {
 		commentDirection = direction_id;
 	}
 	
+	/**
+	 * commentの表示時間を決めるメソッド
+	 * @param time
+	 */
+	public void setShowingTime(int time) {
+		showingTime = time;
+	}
+	
+	public int getShowingTime() {
+		return showingTime;
+	}
+	
+	public void start() {
+		doTalk = true;
+	}
+	
+	public void stop() {
+		doTalk = false;
+		showingCount = 0;
+	}
+	
+	/**
+	 * commentの表示が続いているか・否かを判定するメソッド。
+	 * @return
+	 */
+	public boolean doTalk() {
+		return this.doTalk;
+	}
+	
+	public void update() {
+		showingCount++;
+		if(showingCount >= showingTime) {
+			stop();
+		}
+	}
+	
 	public void Draw(Canvas c) {
 		/* ninePatchDrawbleはfloatだと使えない。違う方法を検討する必要あり */
 		/* 現状は無理やりRect型を使って、実装している */
@@ -247,7 +290,7 @@ public class TalkBallon {
 		//nDrawble.draw(c);
 		c.drawBitmap(image[commentDirection], ballonRect.left, ballonRect.top,null);
 		
-		//文字を描く（dummy)
+		//文字を描く
 		c.drawText(message, textLeft, textTop, mPaint);
 	}
 }

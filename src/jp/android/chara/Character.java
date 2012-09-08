@@ -244,11 +244,12 @@ public abstract class Character extends RectF {
 			mAnimation.stopAnimation();
 			break;
 		case ACTION_TALK_START:
-			Talk("メールだよ！");//dummy
 			IsTalkAction = true;
+			comment.start();
 			break;
 		case ACTION_TALK_STOP:
 			IsTalkAction = false;
+			comment.stop();
 			break;
 		}
 	}
@@ -270,7 +271,11 @@ public abstract class Character extends RectF {
 	 */
 	abstract protected void ChangeDirection(int direct);
 	
-	private void Talk(String message) {
+	/**
+	 * commentの表示メッセージをセットする。
+	 * @param message
+	 */
+	public void SetTalkMessage(String message) {
 		comment.SetMessage(message);
 	}
 	
@@ -294,7 +299,6 @@ public abstract class Character extends RectF {
 		
 		if(IsTalkAction) {
 			comment.Draw(c);
-			//balloon.draw(c);
 		}
 	}
 }

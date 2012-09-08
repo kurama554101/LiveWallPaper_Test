@@ -238,6 +238,7 @@ public class LiveWallPaperServiceTest extends WallpaperService {
 		public void onReceive(Context context, Intent intent) {
 			Log.d("NFcReceive", "NFcMessageReceive!");
 			if(chara1 != null) {
+				chara1.SetTalkMessage("ƒ[ƒ‹‚¾‚æ!");
 				chara1.Action(Character.ACTION_TALK_START);
 			}
 		}

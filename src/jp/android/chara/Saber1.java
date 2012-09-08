@@ -126,6 +126,11 @@ public class Saber1 extends Character {
 	@Override
 	public void update() {
 		if(IsTalkAction) {
+			comment.update();
+			if(!comment.doTalk()) {
+				IsTalkAction = false;
+			}
+			
 			 //balloonが画面端を超えていないかの確認
 			 //デフォルトはキャラクターの左上にballoonを配置する
 			boolean checkLeftSide = ((this.centerX()-this.width()/4) >= comment.GetWidth());
